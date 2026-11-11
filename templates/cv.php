@@ -21,6 +21,9 @@ $contact = array_filter([
         <?php if ($contact): ?>
             <p class="cv-contact"><?= implode(' · ', $contact) ?></p>
         <?php endif ?>
+        <?php if ($profile['machine_note'] !== ''): ?>
+            <p class="machine-note" aria-hidden="true"><?= nl2br(e($profile['machine_note'])) ?></p>
+        <?php endif ?>
     </header>
 
     <?php if (trim($profile['summary']) !== ''): ?>

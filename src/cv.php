@@ -46,6 +46,7 @@ function cv_profile(): array
     static $profile;
     return $profile ??= query('SELECT * FROM cv_profile WHERE id = 1')->fetch() ?: [
         'name' => 'Your Name', 'headline' => '', 'location' => '', 'email' => '', 'links' => '', 'summary' => '',
+        'search_description' => '', 'machine_note' => '',
     ];
 }
 
@@ -75,9 +76,17 @@ function profile_input(): array
         'email' => trim(input('email')),
         'links' => trim(str_replace("\r\n", "\n", input('links'))),
         'summary' => trim(str_replace("\r\n", "\n", input('summary'))),
+        'search_description' => trim(preg_replace('/\s+/', ' ', input('search_description')) ?? ''),
+        'machine_note' => trim(str_replace("\r\n", "\n", input('machine_note'))),
     ];
 
     $errors = [];
+    if (mb_strlen($values['search_description']) > 300) {
+        $errors['search_description'] = 'Keep this under 300 characters. Google shows about 155.';
+    }
+    if (mb_strlen($values['machine_note']) > 2000) {
+        $errors['machine_note'] = 'Keep this under 2,000 characters.';
+    }
     if ($values['name'] === '') {
         $errors['name'] = 'Your name is shown at the top of every page.';
     }
@@ -103,10 +112,15 @@ function profile_input(): array
 function save_profile(array $values): void
 {
     query(
-        'INSERT INTO cv_profile (id, name, headline, location, email, links, summary) VALUES (1, ?, ?, ?, ?, ?, ?)
+        'INSERT INTO cv_profile (id, name, headline, location, email, links, summary, search_description, machine_note)
+         VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?)
          ON DUPLICATE KEY UPDATE name = VALUES(name), headline = VALUES(headline), location = VALUES(location),
-             email = VALUES(email), links = VALUES(links), summary = VALUES(summary)',
-        [$values['name'], $values['headline'], $values['location'], $values['email'], $values['links'], $values['summary']],
+             email = VALUES(email), links = VALUES(links), summary = VALUES(summary),
+             search_description = VALUES(search_description), machine_note = VALUES(machine_note)',
+        [
+            $values['name'], $values['headline'], $values['location'], $values['email'], $values['links'],
+            $values['summary'], $values['search_description'], $values['machine_note'],
+        ],
     );
 }
 

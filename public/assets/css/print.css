@@ -16,7 +16,8 @@
 
 .site-header,
 .site-footer,
-.back {
+.back,
+.machine-note {
 	display: none;
 }
 

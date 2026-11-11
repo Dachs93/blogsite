@@ -33,6 +33,15 @@ require __DIR__ . '/_nav.php';
         <?= field('summary', 'Summary', $values['summary'], $errors, 'textarea',
             'Two or three sentences about you. Markdown allowed.',
             ['rows' => 5]) ?>
+
+        <h3 class="form-subhead">Search engines</h3>
+        <?= field('search_description', 'Search description', $values['search_description'], $errors, 'textarea',
+            'Suggested text for the snippet under your link in Google. Google may use it or write its own. About 155 characters shows in full. Blank uses your headline.',
+            ['rows' => 2, 'maxlength' => 300]) ?>
+        <?= field('machine_note', 'Hidden note for machines', $values['machine_note'], $errors, 'textarea',
+            'Not shown to visitors, screen readers or in print, but it\'s in the page source, so crawlers and AI summaries read it (and so can anyone who views the source). Plain text. Leave blank for none.',
+            ['rows' => 3, 'maxlength' => 2000]) ?>
+
         <div class="actions">
             <button type="submit" class="button">Save profile</button>
         </div>

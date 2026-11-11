@@ -50,7 +50,11 @@ function run(string $method, string $path): void
     }
 
     if ($path === '/') {
-        render('cv', ['section' => 'cv', 'items' => cv_items_by_section()]);
+        render('cv', [
+            'section' => 'cv',
+            'description' => cv_profile()['search_description'],
+            'items' => cv_items_by_section(),
+        ]);
     } elseif ($path === '/writing') {
         render('posts', ['section' => 'writing', 'title' => 'Writing', 'posts' => all_posts(include_hidden: is_admin())]);
     } elseif (preg_match('#^/writing/([a-z0-9-]+)$#', $path, $m) && ($post = find_post_by_slug($m[1], include_hidden: is_admin()))) {

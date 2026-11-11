@@ -34,7 +34,8 @@ Requires PHP 8.1 or newer with `pdo_mysql`, and an empty MariaDB/MySQL database.
 4. Set `secret`: run `php -r 'echo bin2hex(random_bytes(32)), PHP_EOL;'` and paste
    the output.
 
-The tables are created automatically on the first page load.
+The tables are created automatically on the first page load. Later database
+changes (`MIGRATIONS` in `src/db.php`) are applied the same way after a deploy.
 
 To change the password later, generate a new hash and replace it in
 `config.php`. That also logs out every device that was logged in.
@@ -49,6 +50,10 @@ Log in at `/admin`.
 - **CV:** edit the profile (name, headline, contact details, links, summary),
   and add, edit, reorder (↑ ↓) or delete entries under Experience, Education,
   Skills and Projects. An empty section is hidden on the CV.
+- **Search engines** (in the CV profile): *Search description* becomes the
+  page's meta description, which Google may show under your link. *Hidden note
+  for machines* is in the page source for crawlers to read, but isn't shown on
+  screen, read by screen readers or printed.
 
 To get a PDF of the CV, print the front page from a browser (Ctrl+P) and choose
 **Save as PDF**. The print stylesheet lays it out on A4, without the header and
