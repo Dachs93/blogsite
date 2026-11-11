@@ -1,0 +1,56 @@
+/* Print / "Save as PDF": just the page content, black on white, on A4. */
+
+@page {
+	size: A4;
+	margin: 14mm 16mm;
+}
+
+:root:root {
+	--wp--preset--color--base: #fff;
+	--wp--preset--color--contrast: #000;
+	--wp--preset--color--muted: #444;
+	--wp--preset--color--subtle: #ccc;
+	--wp--preset--color--accent: #000;
+}
+
+header.wp-block-template-part,
+footer.wp-block-template-part,
+.wp-block-post-navigation-link,
+.wp-block-query-pagination,
+#wpadminbar {
+	display: none !important;
+}
+
+html {
+	margin-top: 0 !important; /* admin bar offset */
+}
+
+body {
+	font-size: 10pt;
+	line-height: 1.45;
+}
+
+a {
+	text-decoration: none;
+}
+
+/* Paper can't be clicked, so print web addresses after their links in the contact line. */
+.cv-contact a[href^="http"]::after {
+	content: " (" attr(href) ")";
+	font-size: 85%;
+}
+
+.cv-entry {
+	break-inside: avoid;
+}
+
+.cv-section-title,
+h2,
+h3 {
+	break-after: avoid;
+}
+
+.cv-section {
+	margin-block-start: 1.1em;
+	padding-block-start: 0.7em;
+}

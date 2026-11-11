@@ -1,0 +1,6 @@
+# This repo is only the WordPress theme. WordPress itself, wp-config.php and
+# uploads live on the server (and in ~/workspace/blogsite-wp locally), never here.
+.DS_Store
+Thumbs.db
+node_modules/
+*.log

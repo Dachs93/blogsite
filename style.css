@@ -1,0 +1,39 @@
+/*
+Theme Name: Blogsite
+Description: Personal CV and blog. The front page is the CV; posts make up the blog.
+Version: 0.1.0
+Requires at least: 6.6
+Tested up to: 7.1
+Requires PHP: 8.1
+License: GPL-2.0-or-later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: blogsite
+*/
+
+/* Dark mode on screens only, so printing always uses the light palette.
+   :root:root out-ranks the :root rule WordPress prints for theme.json. */
+@media screen and (prefers-color-scheme: dark) {
+	:root:root {
+		--wp--preset--color--base: #161513;
+		--wp--preset--color--contrast: #ebe8e1;
+		--wp--preset--color--muted: #a39e94;
+		--wp--preset--color--subtle: #34312c;
+		--wp--preset--color--accent: #7fb6dd;
+		color-scheme: dark;
+	}
+}
+
+.site-header {
+	padding-block: var(--wp--preset--spacing--40);
+}
+
+.site-footer {
+	padding-block: var(--wp--preset--spacing--50);
+	margin-block-start: var(--wp--preset--spacing--60);
+	font-size: var(--wp--preset--font-size--small);
+	color: var(--wp--preset--color--muted);
+}
+
+main.wp-block-group {
+	padding-block-end: var(--wp--preset--spacing--50);
+}
