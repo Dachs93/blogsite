@@ -1,0 +1,302 @@
+:root {
+	--bg: #fbfaf7;
+	--text: #1d1c1a;
+	--muted: #66625a;
+	--line: #e6e2d9;
+	--accent: #1c5d8a;
+	--sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	--serif: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+	--mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+	--measure: 44rem;
+	color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg: #161513;
+		--text: #ebe8e1;
+		--muted: #a39e94;
+		--line: #34312c;
+		--accent: #7fb6dd;
+		color-scheme: dark;
+	}
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+}
+
+body {
+	margin: 0;
+	background: var(--bg);
+	color: var(--text);
+	font: 1.0625rem/1.6 var(--sans);
+}
+
+.wrap {
+	max-width: calc(var(--measure) + 2rem);
+	margin-inline: auto;
+	padding-inline: 1rem;
+}
+
+a {
+	color: var(--accent);
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+h1,
+h2,
+h3 {
+	font-family: var(--serif);
+	font-weight: 600;
+	line-height: 1.2;
+}
+
+h1 {
+	font-size: clamp(2rem, 1.6rem + 2vw, 2.75rem);
+	margin-block: 0 0.5rem;
+	letter-spacing: -0.02em;
+}
+
+/* Header and footer */
+
+.site-header .wrap {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 0.5rem 1.5rem;
+	padding-block: 1.5rem 2.5rem;
+}
+
+.site-name {
+	font-family: var(--serif);
+	font-size: 1.25rem;
+	font-weight: 600;
+	color: var(--text);
+	text-decoration: none;
+}
+
+.site-header nav {
+	display: flex;
+	gap: 1.25rem;
+	font-size: 0.875rem;
+}
+
+.site-header nav a {
+	color: var(--muted);
+	text-decoration: none;
+}
+
+.site-header nav a:hover,
+.site-header nav a[aria-current="page"] {
+	color: var(--text);
+}
+
+main {
+	padding-block-end: 3rem;
+}
+
+.site-footer {
+	border-top: 1px solid var(--line);
+	font-size: 0.875rem;
+	color: var(--muted);
+}
+
+.site-footer .wrap {
+	padding-block: 2rem;
+}
+
+/* CV */
+
+.cv-name {
+	margin: 0;
+}
+
+.cv-headline {
+	margin-block: 0.25rem 0;
+	font-size: 1.25rem;
+	color: var(--muted);
+}
+
+.cv-contact {
+	margin-block: 0.75rem 0;
+	font-size: 0.875rem;
+}
+
+.cv-section {
+	margin-block-start: 2.25rem;
+	padding-block-start: 1.5rem;
+	border-top: 1px solid var(--line);
+}
+
+.cv-section-title {
+	margin-block: 0 1rem;
+	font-family: var(--sans);
+	font-size: 0.875rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--muted);
+}
+
+.cv-section > p:first-of-type {
+	margin-block-start: 0;
+}
+
+.cv-entry + .cv-entry {
+	margin-block-start: 1.5rem;
+}
+
+.cv-entry-head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 0.15rem 1rem;
+}
+
+.cv-entry-title {
+	margin: 0;
+	font-size: 1.0625rem;
+}
+
+.cv-entry p {
+	margin-block: 0.35rem 0;
+}
+
+.cv-dates {
+	margin: 0;
+	font-family: var(--mono);
+	font-size: 0.8125rem;
+	white-space: nowrap;
+	color: var(--muted);
+}
+
+.cv-entry .cv-dates {
+	margin: 0;
+}
+
+.cv-meta {
+	font-size: 0.875rem;
+	color: var(--muted);
+}
+
+.cv-entry ul {
+	margin-block: 0.5rem 0;
+	padding-inline-start: 1.1rem;
+}
+
+.cv-entry li + li {
+	margin-block-start: 0.2rem;
+}
+
+.cv-skills {
+	margin: 0;
+}
+
+.cv-skills div + div {
+	margin-block-start: 0.3rem;
+}
+
+.cv-skills dt {
+	display: inline;
+	font-weight: 600;
+}
+
+.cv-skills dt::after {
+	content: ": ";
+}
+
+.cv-skills dd {
+	display: inline;
+	margin: 0;
+}
+
+/* Writing */
+
+.post-list {
+	margin: 2rem 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.post-list li + li {
+	margin-block-start: 2rem;
+}
+
+.post-list h2 {
+	margin: 0;
+	font-size: 1.25rem;
+}
+
+.post-list p {
+	margin-block: 0.35rem 0;
+}
+
+.post-meta {
+	margin-block: 0.25rem 0;
+	font-size: 0.875rem;
+	color: var(--muted);
+}
+
+.badge {
+	margin-inline-start: 0.5rem;
+	padding: 0.05rem 0.45rem;
+	border: 1px solid var(--line);
+	border-radius: 999px;
+	font-size: 0.75rem;
+}
+
+.prose {
+	margin-block-start: 2rem;
+}
+
+.prose h2 {
+	margin-block: 2rem 0.75rem;
+	font-size: 1.5rem;
+}
+
+.prose h3 {
+	margin-block: 1.5rem 0.5rem;
+	font-size: 1.25rem;
+}
+
+.prose img {
+	max-width: 100%;
+	height: auto;
+}
+
+.prose blockquote {
+	margin: 1.5rem 0;
+	padding-inline-start: 1rem;
+	border-inline-start: 3px solid var(--line);
+	color: var(--muted);
+}
+
+.prose code {
+	font-family: var(--mono);
+	font-size: 0.9em;
+}
+
+.prose pre {
+	overflow-x: auto;
+	padding: 1rem;
+	border: 1px solid var(--line);
+	border-radius: 6px;
+	font-size: 0.875rem;
+	line-height: 1.5;
+}
+
+.back {
+	margin-block-start: 3rem;
+	font-size: 0.875rem;
+}

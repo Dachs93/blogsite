@@ -1,0 +1,8 @@
+DirectoryIndex index.php
+
+# Anything that isn't a real file (CSS, images) goes to the front controller.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L,QSA]
+</IfModule>

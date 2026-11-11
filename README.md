@@ -1,53 +1,59 @@
 # Blogsite
 
-A WordPress block theme for a personal site whose main job is to be a CV. The
-front page is the CV, and the "Writing" page lists blog posts.
+A small personal site in plain PHP whose main job is to be a CV. The front page
+is the CV, and `/writing` is a blog. There's no database, framework or build
+step: the content is files in this repo.
 
-This repository **is the theme**: its root is deployed as
-`wp-content/themes/blogsite`. WordPress itself, `wp-config.php`, the database
-and uploads are not in git.
-
-## What's in it
+## Layout
 
 | Path | Purpose |
 | --- | --- |
-| `style.css` | Theme header, site-wide styles, dark mode |
-| `theme.json` | Colours, fonts, sizes and block styles used by the editor and front end |
-| `functions.php` | Loads the stylesheets and registers the "CV" pattern category |
-| `assets/css/cv.css` | CV layout (also loaded in the editor) |
-| `assets/css/print.css` | Print / Save as PDF: A4, black on white, no header or footer |
-| `templates/` | Front page (CV), pages, single posts, blog list, archives, search, 404 |
-| `parts/` | Header and footer |
-| `patterns/` | **CV page** (the full CV) plus job, education and project entries to add more |
+| `content/cv.php` | **Your CV**: name, contact links, summary, experience, education, skills, projects |
+| `content/posts/` | **Blog posts**, one Markdown file each |
+| `public/` | The web root: `index.php` (front controller) and CSS |
+| `src/` | Routing, rendering and post loading |
+| `templates/` | HTML for the layout, CV, post list, post and 404 pages |
+| `lib/Parsedown.php` | Markdown parser ([Parsedown](https://parsedown.org) 1.7.4, MIT) |
+
+Only `public/` should be served. If the web server's document root is the repo
+folder instead, the top-level `.htaccess` sends every request into `public/`, so
+`content/`, `src/` and the rest are never served directly.
 
 ## Editing the CV
 
-The CV is an ordinary WordPress page, set as the static front page, so you edit
-it in **Pages → CV** in the WordPress admin. To add another job, education entry
-or project, open the inserter (**+**), go to **Patterns → CV** and insert the
-matching pattern.
+Edit `content/cv.php`. Each section is a PHP array. Add, remove or reorder
+entries, and an empty list hides its section. The summary is Markdown; bullet
+points, notes and project descriptions accept inline Markdown (`**bold**`,
+`[links](https://example.com)`).
 
-To get a PDF, open the front page and print it (Ctrl+P), then choose **Save as
-PDF**. The print stylesheet handles the layout.
+To get a PDF, open the CV in a browser, print it (Ctrl+P) and choose **Save as
+PDF**. The print stylesheet lays it out on A4, without the header and footer.
 
-## Local development
+## Writing a post
 
-Local WordPress lives in `~/workspace/blogsite-wp` (outside git). Its
-`wp-content/themes/blogsite` is a symlink to this repository, so edits here show
-up straight away.
+Add `content/posts/YYYY-MM-DD-your-slug.md`:
 
-```bash
-wp server --host=localhost --port=8080 --path=$HOME/workspace/blogsite-wp
+```markdown
+---
+title: The post's title
+summary: One sentence, shown in the post list.
+draft: true
+---
+
+The body, in Markdown.
 ```
 
-Then open <http://localhost:8080> (admin at `/wp-admin`).
+The post's address is `/writing/your-slug`. Drafts and posts with a future date
+appear only when running locally (marked "Draft"). Remove `draft: true` to
+publish.
 
-Requirements: PHP 8.3, MariaDB and [WP-CLI](https://wp-cli.org/).
+## Running locally
 
-## Site Editor gotcha
+Requires PHP 8.1 or newer.
 
-If you change a template or template part in **Appearance → Editor**,
-WordPress saves that copy in the database, and it takes priority over the file
-in this repo. Later changes to that file then won't show up. To go back to the
-file version, open the template in the Site Editor and choose **Reset**. Make
-template changes here in git instead.
+```bash
+php -S localhost:8080 -t public public/index.php
+```
+
+Then open <http://localhost:8080>. Locally, PHP errors are shown on the page; on
+the live site they are hidden.

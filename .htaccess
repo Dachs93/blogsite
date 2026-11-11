@@ -1,0 +1,7 @@
+# Only public/ is meant to be reachable from the web. If the web server's document
+# root is this folder rather than public/, send every request into public/ so
+# content/, src/, templates/ and lib/ can never be fetched directly.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
