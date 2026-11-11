@@ -26,9 +26,10 @@ const CV_SECTIONS = [
     ],
     'skill' => [
         'heading' => 'Skills',
-        'item' => 'skill',
-        'fields' => ['title' => 'Skill'],
-        'hints' => ['title' => 'One skill, for example: PHP'],
+        'item' => 'skills',
+        'single' => true, // One box for the whole section, not a list of entries.
+        'fields' => ['body' => 'Skills'],
+        'hints' => ['body' => 'Markdown. One bullet per line, starting with "- ".'],
     ],
     'project' => [
         'heading' => 'Projects',
@@ -136,6 +137,16 @@ function cv_items_by_section(): array
     return $grouped;
 }
 
+/**
+ * What the admin calls an entry: its title, or the section heading for a section without titles.
+ *
+ * @param array<string, mixed> $item
+ */
+function cv_item_label(array $item): string
+{
+    return $item['title'] !== '' ? $item['title'] : (CV_SECTIONS[$item['section']]['heading'] ?? 'Entry');
+}
+
 /** @return array<string, mixed>|null */
 function find_cv_item(int $id): ?array
 {
@@ -167,8 +178,9 @@ function cv_item_input(string $section): array
 
     $limits = ['title' => 255, 'subtitle' => 255, 'dates' => 100, 'meta' => 500, 'url' => 500];
     $errors = [];
-    if ($values['title'] === '') {
-        $errors['title'] = 'This one is required.';
+    $required = array_key_first($used);
+    if ($values[$required] === '') {
+        $errors[$required] = 'This one is required.';
     }
     foreach ($limits as $field => $max) {
         if (!isset($errors[$field]) && mb_strlen($values[$field]) > $max) {

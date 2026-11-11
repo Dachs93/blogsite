@@ -16,8 +16,9 @@ $attrs = [
     'dates' => ['maxlength' => 100],
     'meta' => ['maxlength' => 500],
     'url' => ['maxlength' => 500],
-    'body' => ['rows' => $cv_section === 'experience' ? 6 : 3],
+    'body' => ['rows' => match ($cv_section) { 'experience' => 6, 'skill' => 10, default => 3 }],
 ];
+$attrs[array_key_first($def['fields'])]['required'] = true;
 ?>
 <p class="back-link"><a href="/admin/cv#<?= e($cv_section) ?>">← <?= e($def['heading']) ?></a></p>
 <h1><?= $item ? 'Edit ' . e($def['item']) : 'Add ' . e($def['item']) ?></h1>
@@ -47,7 +48,7 @@ $attrs = [
         <summary>Delete this <?= e($def['item']) ?></summary>
         <form method="post" action="/admin/cv/items/<?= (int) $item['id'] ?>/delete">
             <?= csrf_field() ?>
-            <p>"<?= e($item['title']) ?>" will be removed from your CV. This can't be undone.</p>
+            <p>"<?= e(cv_item_label($item)) ?>" will be removed from your CV. This can't be undone.</p>
             <button type="submit" class="button danger">Delete</button>
         </form>
     </details>

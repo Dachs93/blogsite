@@ -219,19 +219,13 @@ main {
 	margin-block-start: 0.2rem;
 }
 
-.cv-skills {
-	margin: 0;
-	padding: 0;
-	list-style: none;
+.cv-skills ul {
+	margin-block: 0;
+	padding-inline-start: 1.1rem;
 }
 
-.cv-skills li {
-	display: inline;
-}
-
-.cv-skills li + li::before {
-	content: " · ";
-	color: var(--muted);
+.cv-skills li + li {
+	margin-block-start: 0.2rem;
 }
 
 /* Writing */

@@ -192,6 +192,13 @@ function admin_cv_item_form(?int $id): void
         return;
     }
 
+    // A one-box section that already has its box: edit that instead of adding another.
+    $existing = cv_items_by_section()[$section][0] ?? null;
+    if ($item === null && !empty(CV_SECTIONS[$section]['single']) && $existing) {
+        redirect('/admin/cv/items/' . (int) $existing['id'] . '/edit');
+        return;
+    }
+
     admin_render_cv_item_form($section, $item, cv_item_form_values($item), []);
 }
 

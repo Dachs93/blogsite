@@ -52,7 +52,9 @@ require __DIR__ . '/_nav.php';
     <section class="admin-section" id="<?= e($key) ?>">
         <div class="page-head">
             <h2><?= e($def['heading']) ?></h2>
-            <a class="button secondary" href="/admin/cv/items/new?section=<?= e($key) ?>">Add <?= e($def['item']) ?></a>
+            <?php if (empty($def['single']) || !$items[$key]): ?>
+                <a class="button secondary" href="/admin/cv/items/new?section=<?= e($key) ?>">Add <?= e($def['item']) ?></a>
+            <?php endif ?>
         </div>
 
         <?php if ($items[$key]): ?>
@@ -61,7 +63,7 @@ require __DIR__ . '/_nav.php';
                 <?php foreach ($items[$key] as $i => $item): ?>
                     <li>
                         <div class="item-label">
-                            <a href="/admin/cv/items/<?= (int) $item['id'] ?>/edit"><?= e($item['title']) ?></a>
+                            <a href="/admin/cv/items/<?= (int) $item['id'] ?>/edit"><?= e(cv_item_label($item)) ?></a>
                             <?php if ($item['subtitle'] !== ''): ?><span class="muted"> · <?= e($item['subtitle']) ?></span><?php endif ?>
                             <?php if ($item['dates'] !== ''): ?><span class="muted"> · <?= e($item['dates']) ?></span><?php endif ?>
                         </div>
@@ -71,7 +73,7 @@ require __DIR__ . '/_nav.php';
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="direction" value="<?= $direction ?>">
                                     <button type="submit" class="icon-button"
-                                        aria-label="Move <?= e($item['title']) ?> <?= $direction ?>"
+                                        aria-label="Move <?= e(cv_item_label($item)) ?> <?= $direction ?>"
                                         <?= ($direction === 'up' && $i === 0) || ($direction === 'down' && $i === $last) ? 'disabled' : '' ?>><?= $arrow ?></button>
                                 </form>
                             <?php endforeach ?>
