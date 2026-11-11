@@ -10,9 +10,9 @@
                 <h2><a href="<?= e($post->url()) ?>"><?= e($post->title) ?></a></h2>
                 <p class="post-meta">
                     <time datetime="<?= $post->date->format('Y-m-d') ?>"><?= $post->date->format('j F Y') ?></time>
-                    <?php if (!$post->isPublished()): ?><span class="badge">Draft (local only)</span><?php endif ?>
+                    <?php if (!$post->isPublished()): ?><span class="badge"><?= e($post->status()) ?>: only you can see this</span><?php endif ?>
                 </p>
-                <?php if ($post->summary): ?>
+                <?php if ($post->summary !== ''): ?>
                     <p><?= e($post->summary) ?></p>
                 <?php endif ?>
             </li>

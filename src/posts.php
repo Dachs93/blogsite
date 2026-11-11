@@ -2,19 +2,31 @@
 
 declare(strict_types=1);
 
-/**
- * A blog post from content/posts/YYYY-MM-DD-slug.md.
- */
 final class Post
 {
     public function __construct(
+        public readonly int $id,
         public readonly string $slug,
         public readonly string $title,
-        public readonly DateTimeImmutable $date,
         public readonly string $summary,
         public readonly string $body,
+        public readonly DateTimeImmutable $date,
         public readonly bool $draft,
     ) {
+    }
+
+    /** @param array<string, mixed> $row */
+    public static function fromRow(array $row): self
+    {
+        return new self(
+            (int) $row['id'],
+            $row['slug'],
+            $row['title'],
+            $row['summary'],
+            $row['body'],
+            new DateTimeImmutable($row['published_on']),
+            (bool) $row['draft'],
+        );
     }
 
     public function url(): string
@@ -27,87 +39,149 @@ final class Post
         return md($this->body);
     }
 
-    /** Live on the site: not a draft, and its date has arrived (so you can schedule posts). */
+    /** Visible to everyone: not a draft, and its date has arrived (so posts can be scheduled). */
     public function isPublished(): bool
     {
-        return !$this->draft && $this->date <= new DateTimeImmutable('today');
+        return $this->status() === 'Published';
+    }
+
+    /** 'Draft', 'Scheduled' or 'Published'. */
+    public function status(): string
+    {
+        return match (true) {
+            $this->draft => 'Draft',
+            $this->date > new DateTimeImmutable('today') => 'Scheduled',
+            default => 'Published',
+        };
     }
 }
 
-const POST_FILENAME = '/^(\d{4}-\d{2}-\d{2})-([a-z0-9-]+)\.md$/';
-
 /**
- * Published posts, newest first. Locally (DEV) drafts and future posts are included too.
+ * Posts newest first. Without $include_hidden, only published ones.
  *
  * @return list<Post>
  */
-function all_posts(): array
+function all_posts(bool $include_hidden = false): array
 {
-    $posts = [];
-    foreach (glob(ROOT . '/content/posts/*.md') ?: [] as $file) {
-        $post = load_post($file);
-        if ($post && (DEV || $post->isPublished())) {
-            $posts[] = $post;
-        }
+    $sql = 'SELECT * FROM posts';
+    $params = [];
+    if (!$include_hidden) {
+        $sql .= ' WHERE draft = 0 AND published_on <= ?';
+        $params[] = date('Y-m-d');
     }
+    $sql .= ' ORDER BY published_on DESC, id DESC';
 
-    usort($posts, fn (Post $a, Post $b) => [$b->date, $b->slug] <=> [$a->date, $a->slug]);
-
-    return $posts;
+    return array_map(Post::fromRow(...), query($sql, $params)->fetchAll());
 }
 
-function find_post(string $slug): ?Post
+function find_post_by_slug(string $slug, bool $include_hidden = false): ?Post
 {
-    foreach (all_posts() as $post) {
-        if ($post->slug === $slug) {
-            return $post;
-        }
-    }
+    $row = query('SELECT * FROM posts WHERE slug = ?', [$slug])->fetch();
+    $post = $row ? Post::fromRow($row) : null;
 
-    return null;
+    return $post && ($include_hidden || $post->isPublished()) ? $post : null;
 }
 
-function load_post(string $file): ?Post
+function find_post(int $id): ?Post
 {
-    if (!preg_match(POST_FILENAME, basename($file), $m)) {
-        return null;
-    }
+    $row = query('SELECT * FROM posts WHERE id = ?', [$id])->fetch();
+    return $row ? Post::fromRow($row) : null;
+}
 
-    [$meta, $body] = parse_front_matter((string) file_get_contents($file));
-
-    $date = DateTimeImmutable::createFromFormat('!Y-m-d', $meta['date'] ?? $m[1]);
-    if ($date === false) {
-        return null;
-    }
-
-    return new Post(
-        slug: $m[2],
-        title: $meta['title'] ?? ucfirst(str_replace('-', ' ', $m[2])),
-        date: $date,
-        summary: $meta['summary'] ?? '',
-        body: $body,
-        draft: in_array(strtolower($meta['draft'] ?? 'false'), ['true', 'yes', '1'], true),
-    );
+/** @return array<string, string> Form values for a new post, or an existing one. */
+function post_form_values(?Post $post): array
+{
+    return [
+        'title' => $post?->title ?? '',
+        'slug' => $post?->slug ?? '',
+        'summary' => $post?->summary ?? '',
+        'body' => $post?->body ?? '',
+        'published_on' => ($post?->date ?? new DateTimeImmutable('today'))->format('Y-m-d'),
+        'status' => $post && !$post->draft ? 'published' : 'draft',
+    ];
 }
 
 /**
- * Split "---\nkey: value\n---\nbody" into ([key => value], body). Values are plain strings.
+ * Clean and check the submitted post form.
  *
- * @return array{0: array<string, string>, 1: string}
+ * @return array{0: array<string, string>, 1: array<string, string>} [values, errors by field]
  */
-function parse_front_matter(string $raw): array
+function post_input(): array
 {
-    $raw = str_replace("\r\n", "\n", $raw);
-    if (!preg_match('/\A---\n(.*?)\n---\n?(.*)\z/s', $raw, $m)) {
-        return [[], $raw];
+    $values = [
+        'title' => trim(input('title')),
+        'slug' => trim(input('slug')),
+        'summary' => trim(input('summary')),
+        'body' => str_replace("\r\n", "\n", input('body')),
+        'published_on' => trim(input('published_on')) ?: date('Y-m-d'),
+        'status' => input('status') === 'published' ? 'published' : 'draft',
+    ];
+    $values['slug'] = slugify($values['slug'] !== '' ? $values['slug'] : $values['title']);
+
+    $errors = [];
+    if ($values['title'] === '') {
+        $errors['title'] = 'Give the post a title.';
+    } elseif (mb_strlen($values['title']) > 255) {
+        $errors['title'] = 'Keep the title under 255 characters.';
+    }
+    if ($values['slug'] === '') {
+        $errors['slug'] = 'Use at least one letter or number.';
+    }
+    if (mb_strlen($values['summary']) > 500) {
+        $errors['summary'] = 'Keep the summary under 500 characters.';
+    }
+    $date = DateTimeImmutable::createFromFormat('!Y-m-d', $values['published_on']);
+    if (!$date || $date->format('Y-m-d') !== $values['published_on']) {
+        $errors['published_on'] = 'Use a date like 2026-11-11.';
     }
 
-    $meta = [];
-    foreach (explode("\n", $m[1]) as $line) {
-        if (preg_match('/^([a-z_]+):\s*(.*)$/i', $line, $kv)) {
-            $meta[strtolower($kv[1])] = trim($kv[2], " \t\"'");
+    return [$values, $errors];
+}
+
+/**
+ * Insert or update a post.
+ *
+ * @param array<string, string> $values from post_input()
+ * @return int|null The post's id, or null if another post already uses the slug.
+ */
+function save_post(array $values, ?int $id): ?int
+{
+    $params = [
+        $values['slug'],
+        $values['title'],
+        $values['summary'],
+        $values['body'],
+        $values['published_on'],
+        $values['status'] === 'draft' ? 1 : 0,
+    ];
+
+    try {
+        if ($id === null) {
+            query('INSERT INTO posts (slug, title, summary, body, published_on, draft) VALUES (?, ?, ?, ?, ?, ?)', $params);
+            return (int) db()->lastInsertId();
         }
+        query('UPDATE posts SET slug = ?, title = ?, summary = ?, body = ?, published_on = ?, draft = ? WHERE id = ?', [...$params, $id]);
+        return $id;
+    } catch (PDOException $e) {
+        if (is_duplicate_key($e)) {
+            return null;
+        }
+        throw $e;
     }
+}
 
-    return [$meta, $m[2]];
+function delete_post(int $id): void
+{
+    query('DELETE FROM posts WHERE id = ?', [$id]);
+}
+
+/** "Fáilte, World!" → "failte-world" */
+function slugify(string $text): string
+{
+    if (class_exists(Normalizer::class)) {
+        $text = preg_replace('/\p{Mn}/u', '', (string) Normalizer::normalize($text, Normalizer::FORM_D)) ?? $text;
+    }
+    $slug = trim((string) preg_replace('/[^a-z0-9]+/', '-', strtolower($text)), '-');
+
+    return rtrim(substr($slug, 0, 190), '-');
 }

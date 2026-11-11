@@ -12,4 +12,7 @@ if (PHP_SAPI === 'cli-server') {
 
 require dirname(__DIR__) . '/src/app.php';
 
-run(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/');
+run(
+    $_SERVER['REQUEST_METHOD'] ?? 'GET',
+    parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/',
+);
