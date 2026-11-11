@@ -26,9 +26,9 @@ const CV_SECTIONS = [
     ],
     'skill' => [
         'heading' => 'Skills',
-        'item' => 'skill group',
-        'fields' => ['title' => 'Group', 'body' => 'Skills'],
-        'hints' => ['title' => 'For example: Languages', 'body' => 'Comma-separated, for example: PHP, JavaScript, SQL'],
+        'item' => 'skill',
+        'fields' => ['title' => 'Skill'],
+        'hints' => ['title' => 'One skill, for example: PHP'],
     ],
     'project' => [
         'heading' => 'Projects',

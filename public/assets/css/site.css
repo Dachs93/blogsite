@@ -221,24 +221,17 @@ main {
 
 .cv-skills {
 	margin: 0;
+	padding: 0;
+	list-style: none;
 }
 
-.cv-skills div + div {
-	margin-block-start: 0.3rem;
-}
-
-.cv-skills dt {
+.cv-skills li {
 	display: inline;
-	font-weight: 600;
 }
 
-.cv-skills dt::after {
-	content: ": ";
-}
-
-.cv-skills dd {
-	display: inline;
-	margin: 0;
+.cv-skills li + li::before {
+	content: " · ";
+	color: var(--muted);
 }
 
 /* Writing */

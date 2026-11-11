@@ -39,14 +39,11 @@ $contact = array_filter([
             <h2 class="cv-section-title"><?= e($def['heading']) ?></h2>
 
             <?php if ($key === 'skill'): ?>
-                <dl class="cv-skills">
+                <ul class="cv-skills">
                     <?php foreach ($items[$key] as $item): ?>
-                        <div>
-                            <dt><?= e($item['title']) ?></dt>
-                            <dd><?= e($item['body']) ?></dd>
-                        </div>
+                        <li><?= e($item['title']) ?></li>
                     <?php endforeach ?>
-                </dl>
+                </ul>
             <?php else: ?>
                 <?php foreach ($items[$key] as $item): ?>
                     <div class="cv-entry">
