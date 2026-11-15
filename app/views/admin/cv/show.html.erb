@@ -1,0 +1,71 @@
+<% content_for :title, "CV" %>
+<%= render "admin/nav", active: "cv" %>
+<div class="page-head">
+  <h1>CV</h1>
+  <%= link_to "View CV", root_path, class: "button secondary" %>
+</div>
+
+<section class="admin-section" id="profile">
+  <h2>Profile</h2>
+
+  <%= form_errors_notice(profile) %>
+
+  <%= form_with model: profile, url: admin_profile_path, method: :patch do |form| %>
+    <%= field form, :name, "Name", required: true, maxlength: 255 %>
+    <%= field form, :headline, "Headline", hint: "What you do, in a few words. Shown under your name.", maxlength: 255 %>
+    <div class="field-row">
+      <%= field form, :location, "Location", maxlength: 255 %>
+      <%= field form, :email, "Email", type: :email, maxlength: 255 %>
+    </div>
+    <%= field form, :links, "Links", type: :textarea, rows: 3,
+          hint: "One per line: a label, a space, then the address. For example: GitHub https://github.com/you" %>
+    <%= field form, :summary, "Summary", type: :textarea, rows: 5,
+          hint: "Two or three sentences about you. Markdown allowed." %>
+
+    <h3 class="form-subhead">Search engines</h3>
+    <%= field form, :search_description, "Search description", type: :textarea, rows: 2, maxlength: 300,
+          hint: "Suggested text for the snippet under your link in Google. Google may use it or write its own. About 155 characters shows in full. Blank uses your headline." %>
+    <%= field form, :machine_note, "Hidden note for machines", type: :textarea, rows: 3, maxlength: 2000,
+          hint: "Not shown to visitors, screen readers or in print, but it's in the page source, so crawlers and AI summaries read it (and so can anyone who views the source). Plain text. Leave blank for none." %>
+
+    <div class="actions">
+      <%= form.button "Save profile", class: "button" %>
+    </div>
+  <% end %>
+</section>
+
+<% CvItem::SECTIONS.each do |key, definition| %>
+  <% items = @items[key] %>
+  <section class="admin-section" id="<%= key %>">
+    <div class="page-head">
+      <h2><%= definition[:heading] %></h2>
+      <% if !definition[:single] || items.empty? %>
+        <%= link_to "Add #{definition[:item]}", new_admin_cv_item_path(section: key), class: "button secondary" %>
+      <% end %>
+    </div>
+
+    <% if items.any? %>
+      <ol class="item-list">
+        <% items.each_with_index do |item, i| %>
+          <li>
+            <div class="item-label">
+              <%= link_to item.label, edit_admin_cv_item_path(item) %>
+              <% if item.subtitle.present? %><span class="muted"> · <%= item.subtitle %></span><% end %>
+              <% if item.dates.present? %><span class="muted"> · <%= item.dates %></span><% end %>
+            </div>
+            <div class="item-actions">
+              <% { "up" => "↑", "down" => "↓" }.each do |direction, arrow| %>
+                <%= button_to arrow, move_admin_cv_item_path(item), params: { direction: direction },
+                      class: "icon-button", form_class: "inline-form",
+                      aria: { label: "Move #{item.label} #{direction}" },
+                      disabled: (direction == "up" && i.zero?) || (direction == "down" && i == items.size - 1) %>
+              <% end %>
+            </div>
+          </li>
+        <% end %>
+      </ol>
+    <% else %>
+      <p class="muted">Nothing here yet. This section stays hidden on the CV until you add something.</p>
+    <% end %>
+  </section>
+<% end %>

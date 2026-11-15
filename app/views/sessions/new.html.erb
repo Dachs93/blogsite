@@ -1,0 +1,24 @@
+<% content_for :title, "Log in" %>
+<div class="narrow">
+  <h1>Log in</h1>
+
+  <% if flash[:alert] %>
+    <p class="notice error" role="alert"><%= flash[:alert] %></p>
+  <% elsif flash[:notice] %>
+    <p class="notice" role="status"><%= flash[:notice] %></p>
+  <% end %>
+
+  <%= form_with url: session_path do |form| %>
+    <div class="field">
+      <%= form.label :email_address, "Email address", for: "f-email_address" %>
+      <%= form.email_field :email_address, id: "f-email_address", value: params[:email_address], required: true, autofocus: true, autocomplete: "username" %>
+    </div>
+    <div class="field">
+      <%= form.label :password, "Password", for: "f-password" %>
+      <%= form.password_field :password, id: "f-password", required: true, autocomplete: "current-password", maxlength: 72 %>
+    </div>
+    <div class="actions">
+      <%= form.button "Log in", class: "button" %>
+    </div>
+  <% end %>
+</div>

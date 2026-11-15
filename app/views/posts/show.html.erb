@@ -1,0 +1,18 @@
+<% content_for :title, @post.title %>
+<% content_for :description, @post.summary %>
+<article class="post">
+  <header>
+    <h1><%= @post.title %></h1>
+    <p class="post-meta">
+      <%= long_date(@post.published_on) %>
+      <%= status_badge(@post) %>
+      <% if authenticated? %> · <%= link_to "Edit", edit_admin_post_path(@post) %><% end %>
+    </p>
+  </header>
+
+  <div class="prose">
+    <%= markdown(@post.body) %>
+  </div>
+</article>
+
+<p class="back"><%= link_to "← All writing", posts_path %></p>

@@ -1,0 +1,60 @@
+<%
+  contact = [
+    (h(profile.location) if profile.location.present?),
+    (mail_to(profile.email) if profile.email.present?),
+    *profile.link_list.map { |link| link_to(link.label, link.url) }
+  ].compact
+%>
+<article class="cv">
+  <header class="cv-header">
+    <h1 class="cv-name"><%= profile.name %></h1>
+    <% if profile.headline.present? %>
+      <p class="cv-headline"><%= profile.headline %></p>
+    <% end %>
+    <% if contact.any? %>
+      <p class="cv-contact"><%= safe_join(contact, " · ") %></p>
+    <% end %>
+    <% if profile.machine_note.present? %>
+      <p class="machine-note" aria-hidden="true"><%= simple_format(profile.machine_note, {}, wrapper_tag: "span") %></p>
+    <% end %>
+  </header>
+
+  <% if profile.summary.present? %>
+    <section class="cv-section">
+      <h2 class="cv-section-title">Summary</h2>
+      <%= markdown(profile.summary) %>
+    </section>
+  <% end %>
+
+  <% CvItem::SECTIONS.each do |key, definition| %>
+    <% next if @items[key].empty? %>
+    <section class="cv-section">
+      <h2 class="cv-section-title"><%= definition[:heading] %></h2>
+
+      <% if key == "skill" %>
+        <div class="cv-skills">
+          <% @items[key].each do |item| %>
+            <%= markdown(item.body) %>
+          <% end %>
+        </div>
+      <% else %>
+        <% @items[key].each do |item| %>
+          <div class="cv-entry">
+            <div class="cv-entry-head">
+              <h3 class="cv-entry-title">
+                <%= item.url.present? ? link_to(item.title, item.url) : item.title %>
+                <% if item.subtitle.present? %>· <%= item.subtitle %><% end %>
+              </h3>
+              <% if item.dates.present? %>
+                <p class="cv-dates"><%= item.dates %></p>
+              <% end %>
+            </div>
+            <% meta = tag.p(markdown_inline(item.meta), class: "cv-meta") if item.meta.present? %>
+            <% body = markdown(item.body) if item.body.present? %>
+            <%= key == "project" ? safe_join([ body, meta ].compact) : safe_join([ meta, body ].compact) %>
+          </div>
+        <% end %>
+      <% end %>
+    </section>
+  <% end %>
+</article>

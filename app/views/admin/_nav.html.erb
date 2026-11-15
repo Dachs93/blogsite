@@ -1,0 +1,7 @@
+<nav class="admin-nav" aria-label="Admin">
+  <%= link_to "Posts", admin_posts_path, aria: { current: ("page" if active == "posts") } %>
+  <%= link_to "CV", admin_cv_path, aria: { current: ("page" if active == "cv") } %>
+</nav>
+<% if flash[:notice] %>
+  <p class="notice" role="status"><%= flash[:notice] %></p>
+<% end %>

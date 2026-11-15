@@ -1,0 +1,27 @@
+<% content_for :title, "Posts" %>
+<%= render "admin/nav", active: "posts" %>
+<div class="page-head">
+  <h1>Posts</h1>
+  <%= link_to "New post", new_admin_post_path, class: "button" %>
+</div>
+
+<% if @posts.any? %>
+  <div class="table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr><th scope="col">Title</th><th scope="col">Status</th><th scope="col">Date</th></tr>
+      </thead>
+      <tbody>
+        <% @posts.each do |post| %>
+          <tr>
+            <td><%= link_to post.title, edit_admin_post_path(post) %></td>
+            <td><span class="badge status-<%= post.status.downcase %>"><%= post.status %></span></td>
+            <td><%= short_date(post.published_on) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <p>No posts yet. <%= link_to "Write the first one.", new_admin_post_path %></p>
+<% end %>

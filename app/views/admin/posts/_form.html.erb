@@ -1,0 +1,46 @@
+<% content_for :title, post.persisted? ? "Edit post" : "New post" %>
+<%= render "admin/nav", active: "posts" %>
+<h1><%= post.persisted? ? "Edit post" : "New post" %></h1>
+
+<%= form_errors_notice(post) %>
+
+<%= form_with model: [ :admin, post ] do |form| %>
+  <%= field form, :title, "Title", required: true, maxlength: 255 %>
+
+  <%= field form, :slug, "Address",
+        hint: "The end of the post's address: /writing/this-part. Leave it blank to make one from the title. Changing it later breaks existing links.",
+        maxlength: 190, autocapitalize: "none", spellcheck: "false" %>
+
+  <%= field form, :summary, "Summary", type: :textarea,
+        hint: "One sentence, shown in the list of posts and in search results.",
+        rows: 2, maxlength: 500 %>
+
+  <%= field form, :body, "Post", type: :textarea,
+        hint: 'Markdown: **bold**, *italic*, [link text](https://…), "## " for a heading, "- " for a bullet, and ``` around code.',
+        rows: 22, class: "code" %>
+
+  <div class="field-row">
+    <%= field form, :published_on, "Date", type: :date, required: true %>
+    <div class="field">
+      <%= form.label :draft, "Status", for: "f-draft" %>
+      <%= form.select :draft, [ [ "Draft: only you can see it", true ], [ "Published", false ] ], {}, id: "f-draft", "aria-describedby": "f-draft-hint" %>
+      <p class="hint" id="f-draft-hint">A published post with a future date goes live on that day.</p>
+    </div>
+  </div>
+
+  <div class="actions">
+    <%= form.button "Save", class: "button" %>
+    <% if post.persisted? %>
+      <%= link_to "View", post_path(post.slug_was), class: "button secondary" %>
+    <% end %>
+    <%= link_to "Back to posts", admin_posts_path %>
+  </div>
+<% end %>
+
+<% if post.persisted? %>
+  <details class="danger-zone">
+    <summary>Delete this post</summary>
+    <p>"<%= post.title_was %>" will be removed for good. This can't be undone.</p>
+    <%= button_to "Delete post", admin_post_path(post), method: :delete, class: "button danger" %>
+  </details>
+<% end %>

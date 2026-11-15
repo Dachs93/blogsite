@@ -1,0 +1,21 @@
+<% content_for :title, "Writing" %>
+<h1>Writing</h1>
+
+<% if @posts.any? %>
+  <ul class="post-list">
+    <% @posts.each do |post| %>
+      <li>
+        <h2><%= link_to post.title, post_path(post.slug) %></h2>
+        <p class="post-meta">
+          <%= long_date(post.published_on) %>
+          <%= status_badge(post) %>
+        </p>
+        <% if post.summary.present? %>
+          <p><%= post.summary %></p>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>Nothing here yet.</p>
+<% end %>

@@ -1,6 +1,26 @@
-# Database password, admin password hash and cookie secret.
+# Old PHP site settings (database password, admin hash, secret).
 /config.php
+
+/.bundle
+/.env*
+/config/*.key
+
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+/tmp/pids/*
+!/tmp/pids/
+!/tmp/pids/.keep
+
+# SQLite databases.
+/storage/*
+!/storage/.keep
+/tmp/storage/*
+!/tmp/storage/
+!/tmp/storage/.keep
+
+/public/assets
 
 .DS_Store
 Thumbs.db
-*.log

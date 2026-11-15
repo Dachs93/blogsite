@@ -1,0 +1,41 @@
+<%
+  definition = item.definition
+  noun = definition[:item]
+  types = { url: :url, body: :textarea }
+  attrs = {
+    title: { maxlength: 255 },
+    subtitle: { maxlength: 255 },
+    dates: { maxlength: 100 },
+    meta: { maxlength: 500 },
+    url: { maxlength: 500 },
+    body: { rows: { "experience" => 6, "skill" => 10 }.fetch(item.section, 3) }
+  }
+  attrs[definition[:fields].keys.first][:required] = true
+%>
+<% content_for :title, "#{item.persisted? ? 'Edit' : 'Add'} #{noun}" %>
+<%= render "admin/nav", active: "cv" %>
+<p class="back-link"><%= link_to "← #{definition[:heading]}", admin_cv_path(anchor: item.section) %></p>
+<h1><%= item.persisted? ? "Edit" : "Add" %> <%= noun %></h1>
+
+<%= form_errors_notice(item) %>
+
+<%= form_with model: item, url: item.persisted? ? admin_cv_item_path(item) : admin_cv_items_path do |form| %>
+  <%= form.hidden_field :section unless item.persisted? %>
+
+  <% definition[:fields].each do |name, label| %>
+    <%= field form, name, label, type: types.fetch(name, :text), hint: definition[:hints][name], **attrs[name] %>
+  <% end %>
+
+  <div class="actions">
+    <%= form.button "Save", class: "button" %>
+    <%= link_to "Cancel", admin_cv_path(anchor: item.section) %>
+  </div>
+<% end %>
+
+<% if item.persisted? %>
+  <details class="danger-zone">
+    <summary>Delete this <%= noun %></summary>
+    <p>"<%= item.label %>" will be removed from your CV. This can't be undone.</p>
+    <%= button_to "Delete", admin_cv_item_path(item), method: :delete, class: "button danger" %>
+  </details>
+<% end %>

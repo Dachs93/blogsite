@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= page_title %></title>
+  <meta name="description" content="<%= page_description %>">
+  <%= stylesheet_link_tag "site" %>
+  <%= stylesheet_link_tag "print", media: "print" %>
+</head>
+<body<%= ' class="admin"'.html_safe if @section == "admin" %>>
+  <header class="site-header">
+    <div class="wrap">
+      <%= link_to profile.name, root_path, class: "site-name" %>
+      <nav aria-label="Main">
+        <%= link_to "CV", root_path, **current_page_attr("cv") %>
+        <%= link_to "Writing", posts_path, **current_page_attr("writing") %>
+        <% if authenticated? %>
+          <%= link_to "Admin", admin_root_path, **current_page_attr("admin") %>
+          <%= button_to "Log out", logout_path, method: :delete, class: "link-button", form_class: "inline-form" %>
+        <% end %>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <%= yield %>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">© <%= Date.current.year %> <%= profile.name %></div>
+  </footer>
+</body>
+</html>

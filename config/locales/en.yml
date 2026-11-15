@@ -1,0 +1,10 @@
+# Validation messages are shown on their own under each form field, so they're
+# written as full sentences without the field name.
+en:
+  errors:
+    format: "%{message}"
+    messages:
+      blank: "This one is required."
+      too_long: "Keep this under %{count} characters."
+      taken: "That's already used."
+      invalid: "That doesn't look right."
