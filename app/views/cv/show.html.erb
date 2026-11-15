@@ -8,14 +8,14 @@
 <article class="cv">
   <header class="cv-header">
     <h1 class="cv-name"><%= profile.name %></h1>
+    <% if profile.machine_note.present? %>
+      <p class="machine-note" aria-hidden="true"><%= simple_format(profile.machine_note, {}, wrapper_tag: "span") %></p>
+    <% end %>
     <% if profile.headline.present? %>
       <p class="cv-headline"><%= profile.headline %></p>
     <% end %>
     <% if contact.any? %>
       <p class="cv-contact"><%= safe_join(contact, " · ") %></p>
-    <% end %>
-    <% if profile.machine_note.present? %>
-      <p class="machine-note" aria-hidden="true"><%= simple_format(profile.machine_note, {}, wrapper_tag: "span") %></p>
     <% end %>
   </header>
 
