@@ -2,7 +2,11 @@
 /config.php
 
 /.bundle
+.env
 /.env*
+
+# Personal notes.
+/docs/
 /config/*.key
 
 /log/*
