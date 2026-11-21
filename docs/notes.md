@@ -18,4 +18,4 @@
 
 - Going to add js to the page to hide the section on launch
 
-- hiding the js after 0.5 seconds no longer flagged by bing crawler
+- hiding the js after 0.5 seconds no longer flagged by bing crawler. It has been moved forward for indexing
