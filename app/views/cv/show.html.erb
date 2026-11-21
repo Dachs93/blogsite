@@ -9,7 +9,7 @@
   <header class="cv-header">
     <h1 class="cv-name"><%= profile.name %></h1>
     <% if profile.machine_note.present? %>
-      <p class="machine-note" aria-hidden="true"><%= simple_format(profile.machine_note, {}, wrapper_tag: "span") %></p>
+      <p class="cv-unannounced" aria-hidden="true"><%= simple_format(profile.machine_note, {}, wrapper_tag: "span") %></p>
     <% end %>
     <% if profile.headline.present? %>
       <p class="cv-headline"><%= profile.headline %></p>

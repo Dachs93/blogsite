@@ -139,9 +139,7 @@ main {
 	font-size: 0.875rem;
 }
 
-/* The profile's "hidden note for machines": in the page text for crawlers, but not
-   drawn on screen. aria-hidden in the HTML keeps it from screen readers too. */
-.machine-note {
+.cv-unannounced {
 	position: absolute;
 	width: 1px;
 	height: 1px;
