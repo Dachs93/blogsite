@@ -8,9 +8,6 @@
 <article class="cv">
   <header class="cv-header">
     <h1 class="cv-name"><%= profile.name %></h1>
-    <% if profile.machine_note.present? %>
-      <p class="cv-unannounced" aria-hidden="true"><%= simple_format(profile.machine_note, {}, wrapper_tag: "span") %></p>
-    <% end %>
     <% if profile.headline.present? %>
       <p class="cv-headline"><%= profile.headline %></p>
     <% end %>
@@ -23,6 +20,9 @@
     <section class="cv-section">
       <h2 class="cv-section-title">Summary</h2>
       <%= markdown(profile.summary) %>
+      <% if profile.machine_note.present? %>
+        <p class="cv-unannounced" aria-hidden="true"><%= simple_format(profile.machine_note, {}, wrapper_tag: "span") %></p>
+      <% end %>
     </section>
   <% end %>
 
