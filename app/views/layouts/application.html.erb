@@ -7,6 +7,7 @@
   <meta name="description" content="<%= page_description %>">
   <%= stylesheet_link_tag "site" %>
   <%= stylesheet_link_tag "print", media: "print" %>
+  <%= javascript_include_tag "cv", defer: true %>
 </head>
 <body<%= ' class="admin"'.html_safe if @section == "admin" %>>
   <header class="site-header">

@@ -51,8 +51,8 @@ class PublicPagesTest < ActionDispatch::IntegrationTest
     assert_response :moved_permanently
   end
 
-  test "scripts are blocked" do
+  test "only same-origin scripts are allowed" do
     get root_path
-    assert_includes response.headers["Content-Security-Policy"], "script-src 'none'"
+    assert_includes response.headers["Content-Security-Policy"], "script-src 'self'"
   end
 end
