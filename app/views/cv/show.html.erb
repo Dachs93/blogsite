@@ -20,7 +20,7 @@
     <section class="cv-section">
       <h2 class="cv-section-title">Summary</h2>
       <%= markdown(profile.summary) %>
-      <% if profile.machine_note.present? %>
+      <% if false #profile.machine_note.present? %>
         <p class="cv-unannounced" aria-hidden="true"><%= simple_format(profile.machine_note, {}, wrapper_tag: "span") %></p>
       <% end %>
     </section>
