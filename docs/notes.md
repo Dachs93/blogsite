@@ -17,3 +17,5 @@
 - To test i removed the hidden section in case that was the blocker. It successfully crawled.
 
 - Going to add js to the page to hide the section on launch
+
+- hiding the js after 0.5 seconds no longer flagged by bing crawler
