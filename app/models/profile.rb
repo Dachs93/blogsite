@@ -18,6 +18,11 @@ class Profile < ApplicationRecord
     first || new(name: "Your Name")
   end
 
+  # The headline up to its first separator: "Data Engineer · Python, SQL" gives "Data Engineer".
+  def role
+    headline.to_s.split(/\s*[·|,—–:]\s*|\s+-\s+/, 2).first.to_s.strip
+  end
+
   # The links field: one per line, a label then the address.
   def link_list
     links.to_s.lines.filter_map do |line|

@@ -14,8 +14,8 @@ module ApplicationHelper
   def page_title
     if content_for?(:title)
       "#{content_for(:title)} · #{profile.name}"
-    elsif profile.headline.present?
-      "#{profile.name} · #{profile.headline}"
+    elsif profile.role.present?
+      "#{profile.name} · #{profile.role}"
     else
       profile.name
     end

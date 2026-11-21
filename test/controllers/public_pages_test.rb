@@ -2,7 +2,7 @@ require "test_helper"
 
 class PublicPagesTest < ActionDispatch::IntegrationTest
   setup do
-    Profile.create!(name: "Ada Lovelace", headline: "Engineer", links: "GitHub https://github.com/ada")
+    Profile.create!(name: "Ada Lovelace", headline: "Engineer · Analytical engines, notes", links: "GitHub https://github.com/ada")
     CvItem.create!(section: "experience", title: "Analyst", subtitle: "Engine Co", body: "- Wrote notes")
     CvItem.create!(section: "skill", body: "- Ruby\n- SQL")
     @live = Post.create!(title: "Live post", body: "Hello **world**", draft: false, published_on: Date.yesterday)
